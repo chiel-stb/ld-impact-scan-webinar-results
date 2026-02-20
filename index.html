@@ -859,26 +859,6 @@
   </div>
 
   <!-- ============================================ -->
-  <!-- SECTION: Cross-analysis                       -->
-  <!-- ============================================ -->
-  <div class="section-title">Kruisanalyse</div>
-
-  <div class="grid-2">
-    <div class="card">
-      <h2><span class="icon" style="background: rgba(255, 107, 53, 0.15); color: var(--st-orange-500);">&#8644;</span> Score per L&D Aanpak</h2>
-      <div class="chart-container-sm">
-        <canvas id="scoreByPhaseChart"></canvas>
-      </div>
-    </div>
-    <div class="card">
-      <h2><span class="icon" style="background: rgba(16, 185, 129, 0.15); color: var(--st-green);">&#8644;</span> Uitdaging per Strategisch Doel</h2>
-      <div class="chart-container-sm">
-        <canvas id="challengeByGoalChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================ -->
   <!-- SECTION: Respondent Table                     -->
   <!-- ============================================ -->
   <div class="section-title">Alle Respondenten</div>
@@ -1267,71 +1247,6 @@ new Chart(document.getElementById('radarChart'), {
         angleLines: { color: 'rgba(148,163,184,0.12)' },
         pointLabels: { font: { size: 12, weight: 600 } }
       }
-    }
-  }
-});
-
-// Score by Phase
-const phaseScores = {};
-DATA.forEach(d => {
-  if (!phaseScores[d.phase]) phaseScores[d.phase] = [];
-  phaseScores[d.phase].push(d.score);
-});
-const phaseAvgs = phaseOrder.map(p => {
-  const s = phaseScores[p] || [];
-  return s.length ? (s.reduce((a,b)=>a+b,0)/s.length) : 0;
-});
-
-new Chart(document.getElementById('scoreByPhaseChart'), {
-  type: 'bar',
-  data: {
-    labels: phaseOrder,
-    datasets: [{
-      data: phaseAvgs.map(v => v.toFixed(1)),
-      backgroundColor: phaseOrder.map(p => phaseColors[p]),
-      borderRadius: 6,
-      borderSkipped: false,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { display: false }, border: { display: false } },
-      y: { min: 0, max: 100, grid: { color: 'rgba(148,163,184,0.08)' }, border: { display: false } }
-    }
-  }
-});
-
-// Challenge by Goal (stacked)
-const goalOrder = ['growth','operational_excellence','stability','transformation','talent_development'];
-const challengeOrder = ['talent_retention','strategic_alignment','change','compliance','fast_productive'];
-const challengeColors2 = ['#EF4444','#FF6B35','#F59E0B','#4A90D9','#64748b'];
-
-const goalChallenge = {};
-goalOrder.forEach(g => {
-  goalChallenge[g] = {};
-  challengeOrder.forEach(c => goalChallenge[g][c] = 0);
-});
-DATA.forEach(d => { if (goalChallenge[d.goal]) goalChallenge[d.goal][d.challenge]++; });
-
-new Chart(document.getElementById('challengeByGoalChart'), {
-  type: 'bar',
-  data: {
-    labels: goalOrder.map(g => goalLabels[g]),
-    datasets: challengeOrder.map((c, i) => ({
-      label: challengeLabels[c],
-      data: goalOrder.map(g => goalChallenge[g][c]),
-      backgroundColor: challengeColors2[i],
-      borderRadius: 3,
-    }))
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', padding: 12, font: { size: 11 } } } },
-    scales: {
-      x: { stacked: true, grid: { display: false }, border: { display: false } },
-      y: { stacked: true, grid: { color: 'rgba(148,163,184,0.08)' }, border: { display: false } }
     }
   }
 });
